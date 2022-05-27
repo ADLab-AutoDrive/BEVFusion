@@ -1,0 +1,39 @@
+ARG PYTORCH="1.6.0"
+ARG CUDA="10.1"
+ARG CUDNN="7"
+
+FROM reg.docker.alibaba-inc.com/had-perc/op-shuofan_test:mmdet3d_new
+
+## Ubuntu 配置admin账户信息, sudo默认密码admin
+RUN groupadd -r -g 505 admin && useradd --no-log-init -m -r -g 505 -u 505 admin -s /bin/bash -p admin && mkdir -p /data && chown -fR admin:admin /data && \
+echo admin:admin | chpasswd
+
+## AliOS add admin user as sudoer
+#RUN groupadd -g 505 admin && useradd -g 505 -u 505 admin && mkdir -p /data && chown -fR admin:admin /data
+#RUN echo admin:admin | chpasswd
+#RUN adduser admin sudo
+
+# Install jupterlab, default access password is "passw0rd"
+RUN pip install jupyterlab
+RUN ln -s /opt/conda/bin/jupyter /usr/local/bin/jupyter
+
+RUN mkdir /result && mkdir /model && mkdir /log && mkdir /summary && mkdir /evaluation_result
+RUN chmod -R 777 /result && chmod -R 777 /model && chmod -R 777 /log && chmod -R 777 /summary && chmod -R 777 /evaluation_result
+
+RUN wget https://pitaya-data-for-annotation.oss-cn-hangzhou.aliyuncs.com/software/ms-python-release.vsix
+RUN wget https://pitaya-data-for-annotation.oss-cn-hangzhou.aliyuncs.com/software/code-server_3.8.0_amd64.deb && dpkg -i code-server_3.8.0_amd64.deb \
+    && code-server  --extensions-dir /usr/lib/code-server/lib/vscode/extensions/ --install-extension ms-python-release.vsix \
+    && rm -f ms-python-release.vsix && rm -f code-server_3.8.0_amd64.deb
+
+RUN rm -rf /data && ln -s /mnt /data
+
+# Clear
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN /opt/conda/bin/conda clean --all -y
+
+RUN rm -rf /workspace
+RUN mkdir /parent_weights && chmod -R 777 /parent_weights
+
+USER admin
+WORKDIR /
+CMD ["/bin/bash","-c","tail -f /dev/null"]

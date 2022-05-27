@@ -1,0 +1,44 @@
+ARG PYTORCH="1.6.0"
+ARG CUDA="10.0"
+ARG CUDNN="7"
+
+FROM registry.cn-shanghai.aliyuncs.com/etlab/asim_autogo:merge
+RUN cd /home/administrator \
+    && wget https://pitaya-data-for-annotation.oss-cn-hangzhou.aliyuncs.com/software/perception/miniconda3.tgz \
+    && tar zxvf miniconda3.tgz \
+    && rm -f miniconda3.tgz
+
+USER root
+RUN chmod 777 /home/administrator
+RUN /home/administrator/miniconda3/bin/pip config set global.index-url https://pypi.mirrors.ustc.edu.cn/simple/ \
+    && /home/administrator/miniconda3/bin/pip install jupyterlab
+ADD ./docker/jupyter_notebook_config.json  /root/.jupyter/jupyter_notebook_config.json
+ADD ./docker/notebook_matrix /bin/notebook
+RUN chmod +x /bin/notebook
+
+## Ubuntu 配置admin账户信息, sudo默认密码admin
+RUN groupadd -r -g 505 admin && useradd --no-log-init -m -r -g 505 -u 505 admin -s /bin/bash -p admin && mkdir -p /data && chown -fR admin:admin /data && \
+echo admin:admin | chpasswd
+
+## AliOS add admin user as sudoer
+#RUN groupadd -g 505 admin && useradd -g 505 -u 505 admin && mkdir -p /data && chown -fR admin:admin /data
+#RUN echo admin:admin | chpasswd
+#RUN adduser admin sudo
+
+# Install jupterlab, default access password is "passw0rd"
+RUN /home/administrator/miniconda3/bin/pip install jupyterlab
+RUN ln -s /home/administrator/miniconda3/bin/jupyter /usr/local/bin/jupyter
+
+RUN mkdir /result && mkdir /model && mkdir /log && mkdir /summary && mkdir /evaluation_result
+RUN chmod -R 777 /result && chmod -R 777 /model && chmod -R 777 /log && chmod -R 777 /summary && chmod -R 777 /evaluation_result
+
+RUN wget https://pitaya-data-for-annotation.oss-cn-hangzhou.aliyuncs.com/software/ms-python-release.vsix
+RUN wget https://pitaya-data-for-annotation.oss-cn-hangzhou.aliyuncs.com/software/code-server_3.8.0_amd64.deb && dpkg -i code-server_3.8.0_amd64.deb \
+    && code-server  --extensions-dir /usr/lib/code-server/lib/vscode/extensions/ --install-extension ms-python-release.vsix \
+    && rm -f ms-python-release.vsix && rm -f code-server_3.8.0_amd64.deb
+
+RUN pip install tqdm pyquaternion trimesh pypcd threadpool
+RUN ln -s /mnt/nas2/autodrive/data_process /workspace
+#USER administrator
+WORKDIR /
+#CMD ["/bin/bash","-c","tail -f /dev/null"]

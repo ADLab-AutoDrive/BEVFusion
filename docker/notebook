@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+echo $BASE_URL
+
+if [ `whoami` = "root" ];then
+		# 启动jupyter并设置对应路径
+    /opt/conda/bin/jupyter lab --ip=0.0.0.0 --LabApp.base_url=$BASE_URL --allow-root
+else
+    /opt/conda/bin/jupyter lab --ip=0.0.0.0 --LabApp.base_url=$BASE_URL
+fi
