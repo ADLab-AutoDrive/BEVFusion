@@ -1,6 +1,4 @@
-# TransFusion repository
-
-Offical PyTorch implementation of BEVFusion: A Simple and Robust LiDAR-Camera Fusion Framework.
+# Code of BEVFusion: A Simple and Robust LiDAR-Camera Fusion Framework.
 
 This paper focuses on LiDAR-camera fusion for 3D object detection. If you find this project useful, please cite:
 
