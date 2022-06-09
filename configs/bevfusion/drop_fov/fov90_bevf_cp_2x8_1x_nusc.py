@@ -1,5 +1,5 @@
 _base_ = [
-    '../../_base_/datasets/nusc_halfbox_cp.py',
+    '../../_base_/datasets/nusc_fov90_cp.py',
     '../../_base_/models/centerpoint_01voxel_second_secfpn_nus.py',
     '../../_base_/schedules/schedule_1x.py',
     '../../_base_/default_runtime.py'
@@ -78,14 +78,13 @@ model = dict(
 
 
 data = dict(
-    samples_per_gpu=4,
+    samples_per_gpu=2,
     workers_per_gpu=6,)
 
 
-optimizer = dict(type='AdamW', lr=0.001, betas=(0.9, 0.999), weight_decay=0.05,
+optimizer = dict(type='AdamW', lr=0.0001, betas=(0.9, 0.999), weight_decay=0.05,
                 paramwise_cfg=dict(custom_keys={'absolute_pos_embed': dict(decay_mult=0.),
                                                  'relative_position_bias_table': dict(decay_mult=0.),
                                                  'norm': dict(decay_mult=0.)}))
 
 load_from = 'work_dirs/bevf_cp_4x8_6e_nusc/epoch_6.pth'
-# fp16 = dict(loss_scale=32.0)

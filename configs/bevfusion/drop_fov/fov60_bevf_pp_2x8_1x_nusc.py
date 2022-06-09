@@ -1,5 +1,5 @@
 _base_ = [
-    '../../_base_/datasets/nusc_fov90_pp.py',
+    '../../_base_/datasets/nusc_fov60_pp.py',
     '../../_base_/schedules/schedule_1x.py',
     '../../_base_/default_runtime.py'
 ]
@@ -141,7 +141,7 @@ model = dict(
 
 
 data = dict(
-    samples_per_gpu=4,
+    samples_per_gpu=2,
     workers_per_gpu=6,)
 
 optimizer = dict(type='AdamW', lr=0.0001, betas=(0.9, 0.999), weight_decay=0.05,
@@ -149,5 +149,5 @@ optimizer = dict(type='AdamW', lr=0.0001, betas=(0.9, 0.999), weight_decay=0.05,
                                                  'relative_position_bias_table': dict(decay_mult=0.),
                                                  'norm': dict(decay_mult=0.)}))
 
-load_from = 'work_dirs/bevf_pp_4x8_1x_nusc/epoch_12.pth'
+load_from = 'work_dirs/bevf_pp_2x8_1x_nusc/epoch_12.pth'
 

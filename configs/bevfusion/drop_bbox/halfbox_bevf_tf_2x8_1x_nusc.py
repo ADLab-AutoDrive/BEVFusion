@@ -175,7 +175,7 @@ workflow = [('train', 1)]
 gpu_ids = range(0, 8)
 
 data = dict(
-    samples_per_gpu=4,
+    samples_per_gpu=2,
     workers_per_gpu=6,)
 
 # fp16 = dict(loss_scale=32.0)

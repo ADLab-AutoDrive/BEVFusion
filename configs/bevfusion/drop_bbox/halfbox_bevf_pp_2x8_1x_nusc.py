@@ -1,7 +1,7 @@
 _base_ = [
-    '../_base_/datasets/nusc_pp.py',
-    '../_base_/schedules/schedule_1x.py',
-    '../_base_/default_runtime.py'
+    '../../_base_/datasets/nusc_halfbox_pp.py',
+    '../../_base_/schedules/schedule_1x.py',
+    '../../_base_/default_runtime.py'
 ]
 final_dim=(900, 1600) # HxW
 downsample=8
@@ -141,14 +141,13 @@ model = dict(
 
 
 data = dict(
-    samples_per_gpu=4,
+    samples_per_gpu=2,
     workers_per_gpu=6,)
 
-optimizer = dict(type='AdamW', lr=0.001, betas=(0.9, 0.999), weight_decay=0.05,
+optimizer = dict(type='AdamW', lr=0.0001, betas=(0.9, 0.999), weight_decay=0.05,
                  paramwise_cfg=dict(custom_keys={'absolute_pos_embed': dict(decay_mult=0.),
                                                  'relative_position_bias_table': dict(decay_mult=0.),
                                                  'norm': dict(decay_mult=0.)}))
 
-load_lift_from = 'work_dirs/bevf_pp_4x8_2x_nusc_cam/epoch_24.pth'     #####load cam stream
-load_from = 'work_dirs/hv_pointpillars_secfpn_sbn-all_4x8_2x_nus-3d/epoch_24.pth'  #####load lidar stream
+load_from = 'work_dirs/bevf_pp_2x8_1x_nusc/epoch_12.pth'
 
