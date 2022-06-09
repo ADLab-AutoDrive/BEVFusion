@@ -1,6 +1,6 @@
-# Code of BEVFusion: A Simple and Robust LiDAR-Camera Fusion Framework.
+# BEVFusion: A Simple and Robust LiDAR-Camera Fusion Framework.
 
-This paper focuses on LiDAR-camera fusion for 3D object detection. If you find this project useful, please cite:
+This [paper](https://arxiv.org/abs/2205.13790) focuses on LiDAR-camera fusion for 3D object detection. If you find this project useful, please cite:
 
 ```bash
 @article{liang2022bevfusion,
@@ -61,6 +61,12 @@ Infos for random box dropping in validation set are in [drop_foreground.json](dr
 | [BEVFusion](configs/bevfusion/drop_fov/fov60_bevf_tf_4x8_1x_nusc.py) | (-π/3,π/3)|False| TransFusion-L | VoxelNet |Dual-Swin-T | 41.5 | 50.8| -
 | [BEVFusion](configs/bevfusion/drop_fov/fov90_bevf_tf_4x8_1x_nusc.py) | (-π/2,π/2)|False| TransFusion-L | VoxelNet |Dual-Swin-T | 46.4 | 55.8| -
 | [BEVFusion](configs/bevfusion/drop_bbox/halfbox_bevf_tf_4x8_1x_nusc.py) | -|True| TransFusion-L | VoxelNet |Dual-Swin-T | 50.3 | 57.6 | -
+
+### nuImage detection validation 
+
+| Model   |2DBackbone | bbox_mAP | segm_mAP  | Model  |
+|---------|-----------|----------|-----------|--------|
+| [Mask R-CNN](configs/bevfusion/cam_stream/mask_rcnn_dbswin-t_fpn_3x_nuim_cocopre.py) |Dual-Swin-T | 56.0 | 46.1 | [Model](https://drive.google.com/file/d/1BcHPxVv_C1LC8oRc-vBhbMk2R6zDYfFx/view?usp=sharing)
 
 
 ## Use BEVFusion

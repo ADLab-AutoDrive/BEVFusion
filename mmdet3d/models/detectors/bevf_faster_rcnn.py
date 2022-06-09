@@ -182,8 +182,6 @@ class BEVF_FasterRCNN(MVXFasterRCNN):
             losses_pts = self.forward_pts_train(pts_feats, gt_bboxes_3d,
                                                 gt_labels_3d, img_metas,
                                                 gt_bboxes_ignore)
-            if self.kd:
-                losses_pts['kd_feat_loss'] = self.kd_feat_loss
             losses.update(losses_pts)
         if img_feats:
             losses_img = self.forward_img_train(
