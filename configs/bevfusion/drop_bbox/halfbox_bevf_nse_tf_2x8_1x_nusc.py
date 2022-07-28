@@ -1,5 +1,5 @@
 _base_ = [
-    '../../_base_/datasets/nusc_fov90_tf.py',
+    '../../_base_/datasets/nusc_halfbox_tf.py',
     '../../_base_/schedules/schedule_1x.py',
 
 ]
@@ -160,7 +160,7 @@ optimizer = dict(type='AdamW', lr=0.0001, betas=(0.9, 0.999), weight_decay=0.05,
                                                  'norm': dict(decay_mult=0.)}))
 optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
 
-
+# total_epochs = 9
 checkpoint_config = dict(interval=1)
 log_config = dict(
     interval=50,
@@ -178,3 +178,4 @@ data = dict(
     samples_per_gpu=2,
     workers_per_gpu=6,)
 
+# fp16 = dict(loss_scale=32.0)
