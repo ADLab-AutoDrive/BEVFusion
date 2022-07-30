@@ -101,7 +101,7 @@ class BEVF_FasterRCNN(MVXFasterRCNN):
         """Extract features from images and points."""
         img_feats = self.extract_img_feat(img, img_metas)
         pts_feats = self.extract_pts_feat(points, img_feats, img_metas)
-        # print(pts_feats[-1].shape)
+
         if self.lift:
             BN, C, H, W = img_feats[0].shape
             batch_size = BN//self.num_views
@@ -124,7 +124,7 @@ class BEVF_FasterRCNN(MVXFasterRCNN):
             lidar2img_rt = img_metas[sample_idx]['lidar2img']  #### extrinsic parameters for multi-view images
             
             img_bev_feat, depth_dist = self.lift_splat_shot_vis(img_feats_view, rots, trans, lidar2img_rt=lidar2img_rt, img_metas=img_metas)
-            # print(img_bev_feat.shape)
+            # print(img_bev_feat.shape, pts_feats[-1].shape)
             if pts_feats is None:
                 pts_feats = [img_bev_feat] ####cam stream only
             else:
