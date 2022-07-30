@@ -12,7 +12,12 @@ file_client_args = dict(backend='disk')
 
 class_names = ['Car', 'Pedestrian', 'Cyclist']
 point_cloud_range = [-75.2, -75.2, -2, 75.2, 75.2, 4]
-input_modality = dict(use_lidar=True, use_camera=True)
+input_modality = dict(
+    use_lidar=True,
+    use_camera=True,
+    use_radar=False,
+    use_map=False,
+    use_external=False)
 # img_scale = (1920, 1280)
 img_scale = (640, 960)
 img_norm_cfg = dict(mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
@@ -23,13 +28,11 @@ train_pipeline = [
         type='LoadPointsFromFile',
         coord_type='LIDAR',
         load_dim=6,
-        use_dim=5,
-        file_client_args=file_client_args),
+        use_dim=5,),
     dict(
         type='LoadAnnotations3D',
         with_bbox_3d=True,
-        with_label_3d=True,
-        file_client_args=file_client_args),
+        with_label_3d=True,),
     dict(type='LoadMultiViewImageFromFiles', img_scale=(1280, 1920)),
     dict(type='PointsRangeFilter', point_cloud_range=point_cloud_range),
     dict(type='ObjectRangeFilter', point_cloud_range=point_cloud_range),
@@ -45,8 +48,7 @@ test_pipeline = [
         type='LoadPointsFromFile',
         coord_type='LIDAR',
         load_dim=6,
-        use_dim=5,
-        file_client_args=file_client_args),
+        use_dim=5,),
     dict(type='LoadMultiViewImageFromFiles', img_scale=(1280, 1920)),
     dict(
         type='MultiScaleFlipAug3D',

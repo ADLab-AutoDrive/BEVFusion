@@ -4,10 +4,8 @@ _base_ = [
 
 ]
 point_cloud_range = [-75.2, -75.2, -2, 75.2, 75.2, 4]
-class_names = [
-    'car', 'truck', 'construction_vehicle', 'bus', 'trailer', 'barrier',
-    'motorcycle', 'bicycle', 'pedestrian', 'traffic_cone'
-]
+class_names = ['Car', 'Pedestrian', 'Cyclist']
+
 voxel_size = [0.1, 0.1, 0.15]
 out_size_factor = 8
 final_dim=(1920, 1280) # HxW
@@ -23,9 +21,10 @@ input_modality = dict(
 num_views = 5
 model = dict(
     type='BEVF_TransFusion',
+    freeze_img = True,
     se=True,
     camera_stream=True, 
-    grid=0.32, 
+    grid=0.8, 
     num_views=5,
     final_dim=final_dim,
     downsample=downsample, 
@@ -101,6 +100,8 @@ model = dict(
         use_conv_for_no_stride=True),
 pts_bbox_head=dict(
         type='TransFusionHead',
+        fuse_img = False,
+        num_views = num_views,
         num_proposals=300,
         auxiliary=True,
         in_channels=256 * 2,
@@ -174,8 +175,8 @@ log_config = dict(
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 load_from = None
-# load_from = 'work_dirs/transfusion_waymo_L/epoch_36.pth'
-# load_img_from = 'work_dirs/mask_rcnn_dbswin-t_fpn_3x_nuim_cocopre/epoch_36.pth'
+load_from = 'work_dirs/waymo_voxel_36e.pth'
+load_img_from = 'work_dirs/mask_rcnn_dbswin-t_fpn_3x_nuim_cocopre/epoch_36.pth'
 
 resume_from = None
 workflow = [('train', 1)]
@@ -185,5 +186,5 @@ find_unused_parameters = True
 no_freeze_head = True
 
 data = dict(
-    samples_per_gpu=4,
+    samples_per_gpu=2,
     workers_per_gpu=6,)
