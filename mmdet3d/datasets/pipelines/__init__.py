@@ -8,7 +8,9 @@ from .test_time_aug import MultiScaleFlipAug3D
 from .transforms_3d import (BackgroundPointsFilter, GlobalRotScaleTrans,
                             IndoorPointSample, ObjectNoise, ObjectRangeFilter,
                             ObjectSample, PointShuffle, PointsRangeFilter,
-                            RandomFlip3D, VoxelBasedPointSampler, Randomdropforeground)
+                            RandomFlip3D, VoxelBasedPointSampler, Randomdropforeground,
+                            GlobalRotScaleTransBEV, RandomFlip3DBEV
+                            )
 from .transforms_2d import ResizeMultiViewImage, NormalizeMultiViewImage, PadMultiViewImage
 # from .transforms_2d import (
 #     PadMultiViewImage, NormalizeMultiviewImage, 
@@ -24,7 +26,8 @@ __all__ = [
     'NormalizePointsColor', 'LoadAnnotations3D', 'IndoorPointSample',
     'PointSegClassMapping', 'MultiScaleFlipAug3D', 'LoadPointsFromMultiSweeps',
     'BackgroundPointsFilter', 'VoxelBasedPointSampler',
-    'PadMultiViewImage', 'NormalizeMultiViewImage', 'ResizeMultiViewImage', 'Randomdropforeground'
+    'PadMultiViewImage', 'NormalizeMultiViewImage', 'ResizeMultiViewImage', 'Randomdropforeground',
+    'GlobalRotScaleTransBEV', 'RandomFlip3DBEV',
     # 'PadMultiViewImage', 'NormalizeMultiviewImage', 
     # 'PhotoMetricDistortionMultiViewImage', 'CropMultiViewImage',
     # 'RandomScaleImageMultiViewImage', 'HorizontalRandomFlipMultiViewImage'
