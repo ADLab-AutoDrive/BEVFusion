@@ -27,22 +27,26 @@ Fusing the camera and LiDAR information has become a de-facto standard for 3D ob
 
 | Model   | Head |3DBackbone |2DBackbone | mAP | NDS  | Link  |
 |---------|------|-----------|-----------|-----|------|-------|
-| [BEVFusion](configs/bevfusion/bevf_tf_4x8_6e_nusc.py) | TransFusion-L | VoxelNet |Dual-Swin-T |69.2 | 71.8 | [Detection](https://drive.google.com/file/d/1vnGBTl2zCL2JM6EKpDxsqbs_CKayc1Gf/view?usp=sharing)
+| [BEVFusion](configs/bevfusion/bevf_tf_4x8_6e_nusc.py) | TransFusion-L | VoxelNet |Dual-Swin-T |69.2 | 71.8 | [Detection](https://drive.google.com/file/d/1vnGBTl2zCL2JM6EKpDxsqbs_CKayc1Gf/view?usp=sharing)|
+| [BEVFusion*](configs/bevfusion/bevf_tf_4x8_10e_nusc_aug.py) | TransFusion-L | VoxelNet |Dual-Swin-T |71.3 | 73.3 | [Leadboard](https://www.nuscenes.org/object-detection?externalData=all&mapData=all&modalities=Any) |
 
 
 ### nuScenes detection validation 
 
 | Model   | Head |3DBackbone |2DBackbone | mAP | NDS  | Model  |
 |---------|------|-----------|-----------|-----|------|--------|
-| [BEVFusion](configs/bevfusion/cam_stream/bevf_pp_4x8_2x_nusc_cam.py) | PointPillars | - |Dual-Swin-T | 22.9 | 31.1 | [Model](https://drive.google.com/file/d/1OeDjGoKpU1FQ42_18pJZ-UqwxLDc6HRc/view?usp=sharing)
-| [BEVFusion](configs/bevfusion/lidar_stream/hv_pointpillars_secfpn_sbn-all_4x8_2x_nus-3d.py) | PointPillars | PointPillars |- | 35.1 | 49.8 | [Model](https://drive.google.com/file/d/1CBF0g1i23hfS-KRihX9J6QF2CglbWjsM/view?usp=sharing)
-| [BEVFusion](configs/bevfusion/bevf_pp_2x8_1x_nusc.py) | PointPillars | PointPillars |Dual-Swin-T | 53.5 | 60.4 | [Model](https://drive.google.com/file/d/1ibsCQ7cPGDBmhlfwKICnu5ePNL1_KlWg/view?usp=sharing)
-| [BEVFusion](configs/bevfusion/cam_stream/bevf_cp_4x8_20e_nusc_cam.py) | CenterPoint | - | Dual-Swin-T | 27.1 | 32.1 | -
-| [BEVFusion](configs/bevfusion/lidar_stream/centerpoint_0075voxel_second_secfpn_dcn_circlenms_4x8_cyclic_20e_nus.py) | CenterPoint | VoxelNet |-| 57.1 | 65.4 | -
-| [BEVFusion](configs/bevfusion/bevf_cp_4x8_6e_nusc.py) | CenterPoint | VoxelNet | Dual-Swin-T | 64.2 | 68.0 | -
-| [BEVFusion](configs/bevfusion/cam_stream/bevf_tf_4x8_20e_nusc_cam.py) | TransFusion-L | - | Dual-Swin-T | 22.7 | 26.1 | -
-| [BEVFusion](configs/bevfusion/lidar_stream/transfusion_nusc_voxel_L.py) | TransFusion-L | VoxelNet | - | 64.9 | 69.9 | -
-| [BEVFusion](configs/bevfusion/bevf_tf_4x8_6e_nusc.py) | TransFusion-L | VoxelNet | Dual-Swin-T | 67.9 | 71.0 | -
+| [BEVFusion](configs/bevfusion/cam_stream/bevf_pp_4x8_2x_nusc_cam.py) | PointPillars | - |Dual-Swin-T | 22.9 | 31.1 | [Model](https://drive.google.com/file/d/1OeDjGoKpU1FQ42_18pJZ-UqwxLDc6HRc/view?usp=sharing)|
+| [BEVFusion](configs/bevfusion/lidar_stream/hv_pointpillars_secfpn_sbn-all_4x8_2x_nus-3d.py) | PointPillars | PointPillars |- | 35.1 | 49.8 | [Model](https://drive.google.com/file/d/1CBF0g1i23hfS-KRihX9J6QF2CglbWjsM/view?usp=sharing)|
+| [BEVFusion](configs/bevfusion/bevf_pp_2x8_1x_nusc.py) | PointPillars | PointPillars |Dual-Swin-T | 53.5 | 60.4 | [Model](https://drive.google.com/file/d/1ibsCQ7cPGDBmhlfwKICnu5ePNL1_KlWg/view?usp=sharing)|
+| [BEVFusion](configs/bevfusion/cam_stream/bevf_cp_4x8_20e_nusc_cam.py) | CenterPoint | - | Dual-Swin-T | 27.1 | 32.1 | -|
+| [BEVFusion](configs/bevfusion/lidar_stream/centerpoint_0075voxel_second_secfpn_dcn_circlenms_4x8_cyclic_20e_nus.py) | CenterPoint | VoxelNet |-| 57.1 | 65.4 | -|
+| [BEVFusion](configs/bevfusion/bevf_cp_4x8_6e_nusc.py) | CenterPoint | VoxelNet | Dual-Swin-T | 64.2 | 68.0 | -|
+| [BEVFusion](configs/bevfusion/cam_stream/bevf_tf_4x8_20e_nusc_cam.py) | TransFusion-L | - | Dual-Swin-T | 22.7 | 26.1 | -|
+| [BEVFusion](configs/bevfusion/lidar_stream/transfusion_nusc_voxel_L.py) | TransFusion-L | VoxelNet | - | 64.9 | 69.9 | -|
+| [BEVFusion](configs/bevfusion/bevf_tf_4x8_6e_nusc.py) | TransFusion-L | VoxelNet | Dual-Swin-T | 67.9 | 71.0 | -|
+| [BEVFusion*](configs/bevfusion/bevf_tf_4x8_10e_nusc_aug.py) | TransFusion-L | VoxelNet | Dual-Swin-T | 69.6 | 72.1 | [Model](https://drive.google.com/file/d/1wgcR6oYCrZvo3-whA5S4obTHce7aJ7OU/view?usp=share_link) |
+
+*: These methods exploit BEV-space data augmentation during training.
 
 ### nuScenes detection validation against LiDAR Malfunctions
 
@@ -52,15 +56,15 @@ Infos for random box dropping in validation set are in [drop_foreground.json](dr
 
 | Model   | Limited FOV | Objects failure | Head |3DBackbone |2DBackbone | mAP | NDS  | Model  |
 |---------|-------------|------------------|------|-----------|-----------|-----|------|--------|
-| [BEVFusion](configs/bevfusion/drop_fov/fov60_bevf_pp_2x8_1x_nusc.py) | (-π/3,π/3)|False| PointPillars | PointPillars |Dual-Swin-T | 33.5 | 42.1 | [Model](https://drive.google.com/file/d/18PQ7IEtdNji5nJZCb9d1FVPDfEWA9PU5/view?usp=sharing)
-| [BEVFusion](configs/bevfusion/drop_fov/fov90_bevf_pp_2x8_1x_nusc.py) | (-π/2,π/2)|False| PointPillars | PointPillars |Dual-Swin-T | 36.8 | 45.8 | [Model](https://drive.google.com/file/d/1HLkDsZr3R1FgRX6SeW3XhGKFcUVJluoV/view?usp=sharing)
-| [BEVFusion](configs/bevfusion/drop_bbox/halfbox_bevf_pp_2x8_1x_nusc.py) | -|True| PointPillars | PointPillars |Dual-Swin-T | 41.6 | 51.9 | [Model](https://drive.google.com/file/d/12QESExZCCHC0ZJlHnAi50VAWMU_OA2uo/view?usp=sharing)
-| [BEVFusion](configs/bevfusion/drop_fov/fov60_bevf_cp_2x8_1x_nusc.py) | (-π/3,π/3)|False| CenterPoint | VoxelNet |Dual-Swin-T | 40.9 | 49.9| -
-| [BEVFusion](configs/bevfusion/drop_fov/fov90_bevf_cp_2x8_1x_nusc.py) | (-π/2,π/2)|False| CenterPoint | VoxelNet |Dual-Swin-T | 45.5 | 54.9| -
-| [BEVFusion](configs/bevfusion/drop_bbox/halfbox_bevf_cp_2x8_1x_nusc.py) | -|True| CenterPoint | VoxelNet |Dual-Swin-T | 54.0 | 61.6 | -
-| [BEVFusion](configs/bevfusion/drop_fov/fov60_bevf_tf_2x8_1x_nusc.py) | (-π/3,π/3)|False| TransFusion-L | VoxelNet |Dual-Swin-T | 41.5 | 50.8| -
-| [BEVFusion](configs/bevfusion/drop_fov/fov90_bevf_tf_2x8_1x_nusc.py) | (-π/2,π/2)|False| TransFusion-L | VoxelNet |Dual-Swin-T | 46.4 | 55.8| -
-| [BEVFusion](configs/bevfusion/drop_bbox/halfbox_bevf_tf_2x8_1x_nusc.py) | -|True| TransFusion-L | VoxelNet |Dual-Swin-T | 50.3 | 57.6 | -
+| [BEVFusion](configs/bevfusion/drop_fov/fov60_bevf_pp_2x8_1x_nusc.py) | (-π/3,π/3)|False| PointPillars | PointPillars |Dual-Swin-T | 33.5 | 42.1 | [Model](https://drive.google.com/file/d/18PQ7IEtdNji5nJZCb9d1FVPDfEWA9PU5/view?usp=sharing)|
+| [BEVFusion](configs/bevfusion/drop_fov/fov90_bevf_pp_2x8_1x_nusc.py) | (-π/2,π/2)|False| PointPillars | PointPillars |Dual-Swin-T | 36.8 | 45.8 | [Model](https://drive.google.com/file/d/1HLkDsZr3R1FgRX6SeW3XhGKFcUVJluoV/view?usp=sharing)|
+| [BEVFusion](configs/bevfusion/drop_bbox/halfbox_bevf_pp_2x8_1x_nusc.py) | -|True| PointPillars | PointPillars |Dual-Swin-T | 41.6 | 51.9 | [Model](https://drive.google.com/file/d/12QESExZCCHC0ZJlHnAi50VAWMU_OA2uo/view?usp=sharing)|
+| [BEVFusion](configs/bevfusion/drop_fov/fov60_bevf_cp_2x8_1x_nusc.py) | (-π/3,π/3)|False| CenterPoint | VoxelNet |Dual-Swin-T | 40.9 | 49.9| -|
+| [BEVFusion](configs/bevfusion/drop_fov/fov90_bevf_cp_2x8_1x_nusc.py) | (-π/2,π/2)|False| CenterPoint | VoxelNet |Dual-Swin-T | 45.5 | 54.9| -|
+| [BEVFusion](configs/bevfusion/drop_bbox/halfbox_bevf_cp_2x8_1x_nusc.py) | -|True| CenterPoint | VoxelNet |Dual-Swin-T | 54.0 | 61.6 | -|
+| [BEVFusion](configs/bevfusion/drop_fov/fov60_bevf_tf_2x8_1x_nusc.py) | (-π/3,π/3)|False| TransFusion-L | VoxelNet |Dual-Swin-T | 41.5 | 50.8| -|
+| [BEVFusion](configs/bevfusion/drop_fov/fov90_bevf_tf_2x8_1x_nusc.py) | (-π/2,π/2)|False| TransFusion-L | VoxelNet |Dual-Swin-T | 46.4 | 55.8| -|
+| [BEVFusion](configs/bevfusion/drop_bbox/halfbox_bevf_tf_2x8_1x_nusc.py) | -|True| TransFusion-L | VoxelNet |Dual-Swin-T | 50.3 | 57.6 | - |
 
 ### nuImage detection validation 
 
@@ -104,6 +108,17 @@ Please refer to [data_preparation.md](docs/getting_started.md) to prepare the da
 
 ### evaluation example for bevfusion-pointpillar
 ./tools/dist_test.sh configs/bevfusion/bevf_pp_2x8_1x_nusc.py ./work_dirs/bevfusion_pp.pth 8 --eval bbox
+
+### training example for sota Results with BEV_augs
+git checkout dev_aug
+# first train camera stream
+./tools/dist_train.sh configs/bevfusion/cam_stream/bevf_tf_4x8_20e_nusc_cam_lr.py 8
+# then train LiDAR stream
+./tools/dist_train.sh configs/bevfusion/lidar_stream/transfusion_nusc_voxel_L.py 8
+# then train BEVFusion
+./tools/dist_train.sh configs/bevfusion/bevf_tf_4x8_10e_nusc_aug.py 8
+
+
 ```
 
 ## Acknowlegement
