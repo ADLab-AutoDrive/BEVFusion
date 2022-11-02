@@ -20,7 +20,7 @@ class MVXTwoStageDetector(Base3DDetector):
     """Base class of Multi-modality VoxelNet."""
 
     def __init__(self,
-                 freeze_img=True,
+                 freeze_img=False,
                  pts_voxel_layer=None,
                  pts_voxel_encoder=None,
                  pts_middle_encoder=None,

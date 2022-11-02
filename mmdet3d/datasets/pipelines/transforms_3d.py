@@ -10,6 +10,73 @@ from ..registry import OBJECTSAMPLERS
 from .data_augment_utils import noise_per_object_v3_
 import json
 
+from typing import Any, Dict
+
+from numpy import random
+@PIPELINES.register_module()
+class GlobalRotScaleTransBEV:
+    def __init__(self, resize_lim, rot_lim, trans_lim, is_train):
+        self.resize_lim = resize_lim
+        self.rot_lim = rot_lim
+        self.trans_lim = trans_lim
+        self.is_train = is_train
+
+    def __call__(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        transform = np.eye(4).astype(np.float32)
+
+        if self.is_train:
+            scale = random.uniform(*self.resize_lim)
+            theta = random.uniform(*self.rot_lim)
+            translation = np.array([random.normal(0, self.trans_lim) for i in range(3)])
+            rotation = np.eye(3)
+
+            if "points" in data:
+                data["points"].rotate(-theta)
+                data["points"].translate(translation)
+                data["points"].scale(scale)
+
+            gt_boxes = data["gt_bboxes_3d"]
+            # print(gt_boxes.rotate(theta))
+            rotation = rotation @ gt_boxes.rotate(theta).numpy()
+            gt_boxes.translate(translation)
+            gt_boxes.scale(scale)
+            data["gt_bboxes_3d"] = gt_boxes
+
+            transform[:3, :3] = rotation.T * scale
+            transform[:3, 3] = translation * scale
+
+        data["lidar_aug_matrix"] = transform
+        return data
+
+@PIPELINES.register_module()
+class RandomFlip3DBEV:
+    def __call__(self, data):
+        flip_horizontal = random.choice([0, 1])
+        flip_vertical = random.choice([0, 1])
+
+        rotation = np.eye(3)
+        if flip_horizontal:
+            rotation = np.array([[1, 0, 0], [0, -1, 0], [0, 0, 1]]) @ rotation
+            if "points" in data:
+                data["points"].flip("horizontal")
+            if "gt_bboxes_3d" in data:
+                data["gt_bboxes_3d"].flip("horizontal")
+            if "gt_masks_bev" in data:
+                data["gt_masks_bev"] = data["gt_masks_bev"][:, :, ::-1].copy()
+
+        if flip_vertical:
+            rotation = np.array([[-1, 0, 0], [0, 1, 0], [0, 0, 1]]) @ rotation
+            if "points" in data:
+                data["points"].flip("vertical")
+            if "gt_bboxes_3d" in data:
+                data["gt_bboxes_3d"].flip("vertical")
+            if "gt_masks_bev" in data:
+                data["gt_masks_bev"] = data["gt_masks_bev"][:, ::-1, :].copy()
+
+        data["lidar_aug_matrix"][:3, :] = rotation @ data["lidar_aug_matrix"][:3, :]
+        return data
+
+
 @PIPELINES.register_module()
 class RandomFlip3D(RandomFlip):
     """Flip the points & bbox.
