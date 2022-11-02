@@ -3,10 +3,10 @@
 This [paper](https://arxiv.org/abs/2205.13790) focuses on LiDAR-camera fusion for 3D object detection. If you find this project useful, please cite:
 
 ```bash
-@article{liang2022bevfusion,
+@inproceedings{liang2022bevfusion,
   title={{BEVFusion: A Simple and Robust LiDAR-Camera Fusion Framework}},
   author={Tingting Liang, Hongwei Xie, Kaicheng Yu, Zhongyu Xia, Zhiwei Lin, Yongtao Wang, Tao Tang, Bing Wang and Zhi Tang},
-  journal={arxiv},
+  booktitle = {Neural Information Processing Systems (NeurIPS)},
   year={2022}
 }
 ```
