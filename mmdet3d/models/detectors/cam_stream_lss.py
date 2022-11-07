@@ -226,14 +226,22 @@ class LiftSplatShoot(nn.Module):
         frustum = torch.stack((xs, ys, ds), -1)
         return nn.Parameter(frustum, requires_grad=False)
 
-    def get_geometry(self, rots, trans, post_rots=None, post_trans=None):
+    def get_geometry(self, rots, trans, post_rots=None, post_trans=None,extra_rots=None,extra_trans=None):
         """Determine the (x,y,z) locations (in the ego frame)
         of the points in the point cloud.
         Returns B x N x D x H/downsample x W/downsample x 3
         """
         B, N, _ = trans.shape
-
-        points = self.frustum.repeat(B, N, 1, 1, 1, 1).unsqueeze(-1)  # B x N x D x H x W x 3 x 1
+        # ADD
+        # undo post-transformation
+        # B x N x D x H x W x 3
+        if post_rots is not None or post_trans is not None:
+            if post_trans is not None:
+                points = self.frustum - post_trans.view(B, N, 1, 1, 1, 3)
+            if post_rots is not None:
+                points = torch.inverse(post_rots).view(B, N, 1, 1, 1, 3, 3).matmul(points.unsqueeze(-1))
+        else:
+            points = self.frustum.repeat(B, N, 1, 1, 1, 1).unsqueeze(-1)  # B x N x D x H x W x 3 x 1
 
         # cam_to_ego
         points = torch.cat((points[:, :, :, :, :, :2] * points[:, :, :, :, :, 2:3],
@@ -242,6 +250,11 @@ class LiftSplatShoot(nn.Module):
         points = rots.view(B, N, 1, 1, 1, 3, 3).matmul(points).squeeze(-1)
         points += trans.view(B, N, 1, 1, 1, 3)
 
+        if extra_rots is not None or extra_trans is not None:
+            if extra_rots is not None:
+                points = extra_rots.view(B, N, 1, 1, 1, 3, 3).matmul(points.unsqueeze(-1)).squeeze(-1)
+            if extra_trans is not None:
+                points += extra_trans.view(B, N, 1, 1, 1, 3)
         return points
 
     def get_cam_feats(self, x):
@@ -293,23 +306,23 @@ class LiftSplatShoot(nn.Module):
         # griddify (B x C x Z x X x Y)
         final = torch.zeros((B, C, self.nx[2], self.nx[0], self.nx[1]), device=x.device)
         final[geom_feats[:, 3], :, geom_feats[:, 2], geom_feats[:, 0], geom_feats[:, 1]] = x
-        
+
         return final
 
-    def get_voxels(self, x, rots=None, trans=None, post_rots=None, post_trans=None):
-        geom = self.get_geometry(rots, trans, post_rots, post_trans)
+    def get_voxels(self, x, rots=None, trans=None, post_rots=None, post_trans=None,extra_rots=None,extra_trans=None):
+        geom = self.get_geometry(rots, trans, post_rots, post_trans,extra_rots,extra_trans)
         x, depth = self.get_cam_feats(x)
         x = self.voxel_pooling(geom, x)
         return x, depth
-    
+
     def s2c(self, x):
         B, C, H, W, L = x.shape
         bev = torch.reshape(x, (B, C*H, W, L))
         bev = bev.permute((0,1,3,2))
         return bev
 
-    def forward(self, x, rots, trans, lidar2img_rt=None, bboxs=None, post_rots=None, post_trans=None, aug_bboxs=None, img_metas=None):
-        x, depth = self.get_voxels(x, rots, trans, post_rots, post_trans) # [B, C, H, W, L]
+    def forward(self, x, rots, trans, lidar2img_rt=None, img_metas=None, post_rots=None, post_trans=None, extra_rots=None,extra_trans=None):
+        x, depth = self.get_voxels(x, rots, trans, post_rots, post_trans,extra_rots,extra_trans) # [B, C, H, W, L]
         bev = self.s2c(x)
         x = self.bevencode(bev)
         return x, depth

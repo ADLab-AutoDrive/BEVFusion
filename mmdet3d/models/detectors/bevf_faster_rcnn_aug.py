@@ -90,101 +90,67 @@ class BEVF_FasterRCNN_Aug(MVXFasterRCNN):
         voxels, num_points, coors = self.voxelize(pts)
         voxel_features = self.pts_voxel_encoder(voxels, num_points, coors,
                                                 )
-        # print(voxel_features.shape) [23884, 64]
         batch_size = coors[-1, 0] + 1
         x = self.pts_middle_encoder(voxel_features, coors, batch_size)
-        # print(x.shape)# [1, 64, 400, 400])
-        # print(type(gt_bboxes_3d),len(gt_bboxes_3d),gt_bboxes_3d[0])
-        # if gt_bboxes_3d:
-        #     # from mmdet3d.core.bbox import Box3DMode
-        #     # bboxs = gt_bboxes_3d[0].convert_to(Box3DMode.DEPTH).tensor
-        #     bboxs = gt_bboxes_3d[0].tensor
-        #     # print(bboxs.shape) # ([23, 9]) [3, 9])
-        #     bboxs = bboxs[:, [3,4,5,0,1,2,6]]
-        #     self.lift_splat_shot_vis.draw_encode_voxels_bev(x, bboxs)
-        #     exit(0)
+
 
         x = self.pts_backbone(x)
-        # print(x[0].shape) ([1, 64, 200, 200])
-        # print(len(x))    3
+
         if self.with_pts_neck:
             x = self.pts_neck(x)
-            # print(x[0].shape) [1, 384, 200, 200])
 
-        # bboxs = gt_bboxes_3d[0].tensor
-        # bboxs = bboxs[:, [3,4,5,0,1,2,6]]
-        # self.lift_splat_shot_vis.draw_encode_voxels_bev(x[0], bboxs, filename='vis/lidar_bev_box',scale=0.5)
-        # exit(0)
         return x
     
     
     def extract_feat(self, points, img, img_metas, img_aug_matrix=None, lidar_aug_matrix=None, gt_bboxes_3d=None):
         """Extract features from images and points."""
-        # print(img_aug_matrix)
-        # print(img_metas)
         img_feats = self.extract_img_feat(img, img_metas)
         pts_feats = self.extract_pts_feat(points, img_feats, img_metas)
 
         if self.lift:
             BN, C, H, W = img_feats[0].shape
             batch_size = BN//self.num_views
-            # print(img_feats[0].shape) # [6, 256, 112, 200]
-            # print(pts_feats[0].shape) # [1, 384, 200, 200]    tf ([1, 512, 180, 180])
             img_feats_view = img_feats[0].view(batch_size, self.num_views, C, H, W)
-            # print(img_feats_view.shape) # [1, 6, 256, 112, 200]     torch.Size([1, 6, 256, 112, 200])
             rots = []
             trans = []
             for sample_idx in range(batch_size):
                 rot_list = []
                 trans_list = []
-                # print(len(img_metas[sample_idx]['lidar2img'])) # 6个cam
                 for mat in img_metas[sample_idx]['lidar2img']:  
                     mat = torch.Tensor(mat).to(img_feats_view.device)
                     rot_list.append(mat.inverse()[:3, :3])
-                    # print(mat.inverse()[:3, 3], mat[:3, 3].inverse()) must have at least 2 dimensions. 
                     trans_list.append(mat.inverse()[:3, 3].view(-1))
-                    # print(mat.inverse()[:3, 3].view(-1), mat.inverse()[:3, 3])
+
                 rot_list = torch.stack(rot_list, dim=0)
                 trans_list = torch.stack(trans_list, dim=0)
                 rots.append(rot_list)
                 trans.append(trans_list)
             rots = torch.stack(rots)
             trans = torch.stack(trans)
-            lidar2img_rt = img_metas[sample_idx]['lidar2img']  #### extrinsic parameters for multi-view images
+            lidar2img_rt = img_metas[sample_idx]['lidar2img']
 
-            # print(len(img_aug_matrix),img_aug_matrix[0].shape) 6 torch.Size([2, 4, 4])
             post_rots=None
             post_trans=None
             if img_aug_matrix is not None:
                 img_aug_matrix = torch.stack(img_aug_matrix).permute(1, 0, 2, 3)
-                 # print(img_aug_matrix.shape) torch.Size([2, 6, 4, 4])
                 post_rots = img_aug_matrix[..., :3, :3]
                 post_trans = img_aug_matrix[..., :3, 3]
             
             extra_rots=None
             extra_trans=None
             if lidar_aug_matrix is not None:
-                # print(lidar_aug_matrix.shape) torch.Size([2, 4, 4])
-                # print(lidar_aug_matrix)
                 lidar_aug_matrix = lidar_aug_matrix.unsqueeze(1).repeat(1, self.num_views, 1, 1)
-                # print(lidar_aug_matrix[:,0,:,:])
-                # print(lidar_aug_matrix.shape)
                 extra_rots = lidar_aug_matrix[..., :3, :3]
                 extra_trans = lidar_aug_matrix[..., :3, 3]
-            # bboxs = gt_bboxes_3d[0].tensor[:, [3,4,5,0,1,2,6]]
-            # img_bev_feat, depth_dist = self.lift_splat_shot_vis(img_feats_view, rots, trans, lidar2img_rt=lidar2img_rt, img_metas=img_metas,
-            #                                                     post_rots=post_rots, post_trans=post_trans, bboxs=bboxs)
             img_bev_feat, depth_dist = self.lift_splat_shot_vis(img_feats_view, rots, trans, lidar2img_rt=lidar2img_rt, img_metas=img_metas,
                                                                 post_rots=post_rots, post_trans=post_trans, extra_rots=extra_rots,extra_trans=extra_trans)
             
 
-            # print(img_bev_feat.shape) # [1, 256, 200, 200]
             if pts_feats is None:
                 pts_feats = [img_bev_feat] ####cam stream only
             else:
                 if self.lc_fusion:
                     pts_feats = [self.reduc_conv(torch.cat([img_bev_feat, pts_feats[0]], dim=1))]
-                    # print(pts_feats[0].shape) [1, 384, 200, 200]
                     if self.se:
                         pts_feats = [self.seblock(pts_feats[0])]
         return dict(
@@ -192,18 +158,9 @@ class BEVF_FasterRCNN_Aug(MVXFasterRCNN):
             pts_feats = pts_feats,
             depth_dist = depth_dist
         )
-        # return (img_feats, pts_feats, depth_dist)
     
     def simple_test(self, points, img_metas, img=None, img_aug_matrix=None, rescale=False):
         """Test function without augmentaiton."""
-        # print(type(img_metas))
-        # from torchvision import utils as vutils
-        # img_show = img[0].cpu()
-        # for i,sing_img in enumerate(img_show):
-        #     filename='vis/cam_'+str(i)+'.png'
-        #     vutils.save_image(sing_img, 'vis/test_camimage_'+str(i)+'.png',normalize=True)
-        # # print(img_aug_matrix[0])
-        # exit(0)
         if img_aug_matrix is not None:
             img_aug_matrix = img_aug_matrix[0]
         feature_dict = self.extract_feat(
@@ -239,32 +196,7 @@ class BEVF_FasterRCNN_Aug(MVXFasterRCNN):
                       lidar_aug_matrix=None,
                       proposals=None,
                       gt_bboxes_ignore=None):
-        # print(img_aug_matrix)
-        # print(points[0].shape, img[0].shape) torch.Size([360012, 4]) torch.Size([6, 3, 448, 800])
 
-        # points_numpy = points[0].cpu()
-        # import matplotlib.pyplot as plt
-        # from mpl_toolkits.mplot3d import Axes3D
-        # fig = plt.figure(figsize=(10, 7.5))
-        # ax = Axes3D(fig)
-        # ax.view_init(30, 150)
-        # ax.scatter(xs=[-54, 54], ys=[-54, 54], zs=[-10, 10], c='white')
-        # ax.scatter(xs=points_numpy[:, 1], ys=-points_numpy[:, 0], zs=points_numpy[:, 2], c='blue', s=1)
-        # ax.set_xlabel('x')
-        # ax.set_ylabel('y')
-        # ax.set_zlabel('z')
-        # plt.gca().set_box_aspect((54, 54, 10))
-        # plt.savefig('vis/lidar.png')
-
-        # from torchvision import utils as vutils
-        # img_show = img[0].cpu()
-        # for i,sing_img in enumerate(img_show):
-        #     filename='vis/cam_'+str(i)+'.png'
-        #     vutils.save_image(sing_img, 'vis/test_camimage_'+str(i)+'.png',normalize=True)
-        # exit(0)
-
-        # # print(type(gt_bboxes_3d),gt_bboxes_3d[0])
-        # visualize_lidar('vis/lidar_bbox.png', points_numpy, gt_bboxes_3d[0])
 
         feature_dict = self.extract_feat(
             points, img=img, img_metas=img_metas, gt_bboxes_3d=gt_bboxes_3d, img_aug_matrix=img_aug_matrix, lidar_aug_matrix=lidar_aug_matrix)
@@ -309,63 +241,4 @@ class BEVF_FasterRCNN_Aug(MVXFasterRCNN):
             raise NotImplementedError
         return loss
 
-
-
-
-from typing import List, Optional, Tuple
-import cv2
-import mmcv
-import numpy as np
-from matplotlib import pyplot as plt
-import os
-from mmdet3d.core.bbox import LiDARInstance3DBoxes
-def visualize_lidar(
-    fpath,
-    lidar,
-    bboxes,
-    labels: Optional[np.ndarray] = None,
-    classes: Optional[List[str]] = None,
-    xlim: Tuple[float, float] = (-50, 50),
-    ylim: Tuple[float, float] = (-50, 50),
-    color: Optional[Tuple[int, int, int]] = None,
-    radius: float = 15,
-    thickness: float = 25,
-) -> None:
-    fig = plt.figure(figsize=(xlim[1] - xlim[0], ylim[1] - ylim[0]))
-
-    ax = plt.gca()
-    ax.set_xlim(*xlim)
-    ax.set_ylim(*ylim)
-    ax.set_aspect(1)
-    ax.set_axis_off()
-
-    if lidar is not None:
-        plt.scatter(
-            lidar[:, 0],
-            lidar[:, 1],
-            s=radius,
-            c="white",
-        )
-
-    if bboxes is not None and len(bboxes) > 0:
-        coords = bboxes.corners[:, [0, 3, 7, 4, 0], :2]
-        for index in range(coords.shape[0]):
-            # name = classes[labels[index]]
-            plt.plot(
-                coords[index, :, 0],
-                coords[index, :, 1],
-                linewidth=thickness,
-                # color=np.array(color or OBJECT_PALETTE[name]) / 255,
-            )
-
-    mmcv.mkdir_or_exist(os.path.dirname(fpath))
-    fig.savefig(
-        fpath,
-        dpi=10,
-        facecolor="black",
-        format="png",
-        bbox_inches="tight",
-        pad_inches=0,
-    )
-    plt.close()
 

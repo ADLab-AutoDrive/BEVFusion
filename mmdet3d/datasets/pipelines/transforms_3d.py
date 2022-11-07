@@ -13,6 +13,13 @@ import json
 from typing import Any, Dict
 
 from numpy import random
+
+
+'''
+The implementation of GlobalRotScaleTransBEV and RandomFlip3DBEV followed
+https://github.com/mit-han-lab/bevfusion/blob/dev/readme/mmdet3d/datasets/pipelines/transforms_3d.py#L134
+'''
+
 @PIPELINES.register_module()
 class GlobalRotScaleTransBEV:
     def __init__(self, resize_lim, rot_lim, trans_lim, is_train):
