@@ -44,9 +44,19 @@ Fusing the camera and LiDAR information has become a de-facto standard for 3D ob
 | [BEVFusion](configs/bevfusion/cam_stream/bevf_tf_4x8_20e_nusc_cam.py) | TransFusion-L | - | Dual-Swin-T | 22.7 | 26.1 | -|
 | [BEVFusion](configs/bevfusion/lidar_stream/transfusion_nusc_voxel_L.py) | TransFusion-L | VoxelNet | - | 64.9 | 69.9 | -|
 | [BEVFusion](configs/bevfusion/bevf_tf_4x8_6e_nusc.py) | TransFusion-L | VoxelNet | Dual-Swin-T | 67.9 | 71.0 | -|
-| [BEVFusion*](configs/bevfusion/bevf_tf_4x8_10e_nusc_aug.py) | TransFusion-L | VoxelNet | Dual-Swin-T | 69.6 | 72.1 | [Model](https://drive.google.com/file/d/1wgcR6oYCrZvo3-whA5S4obTHce7aJ7OU/view?usp=share_link) |
+| [BEVFusion*](configs/bevfusion/bevf_tf_4x8_10e_nusc_aug.py) | TransFusion-L | VoxelNet | Dual-Swin-T | 69.6 | 72.1 | [Model](https://drive.google.com/file/d/1tAJA3_5jkE3IAuS_7l8fRNKYSfSEgU5u/view?usp=sharing) |
 
 *: These methods exploit BEV-space data augmentation during training.
+
+##### Acknowledgements of BEV-space augmentation
+
+We conduct the BEV-space augmentation proposed by [BEVDet](https://arxiv.org/abs/2112.11790) and our implementation of GlobalRotScaleTransBEV and RandomFlip3DBEV followed [BEVFusion-mit](https://github.com/mit-han-lab/bevfusion). You can also refer [BEVDet](https://github.com/HuangJunJie2017/BEVDet), [DEVDepth](https://github.com/Megvii-BaseDetection/BEVDepth) for more implementation versions.
+
+Moreover, there are also image-sapce augmentations you can explore in [LSS](https://github.com/nv-tlabs/lift-splat-shoot), [BEVDet](https://github.com/HuangJunJie2017/BEVDet),  [BEVFusion-mit](https://github.com/mit-han-lab/bevfusion),  [DEVDepth](https://github.com/Megvii-BaseDetection/BEVDepth).
+
+Thanks for these attractive works and their great open-sourced code bases.
+
+
 
 ### nuScenes detection validation against LiDAR Malfunctions
 

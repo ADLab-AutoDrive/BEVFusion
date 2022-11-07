@@ -24,7 +24,6 @@ class BEVF_TransFusion_Aug(BEVF_FasterRCNN_Aug):
             kwargs.pop('freeze_img_backboneneck')
         super(BEVF_TransFusion_Aug, self).__init__(**kwargs)
 
-        # 原来的bug
         
         if self.freeze_img_backboneneck_tf:
             print("freeze_img_backboneneck")
@@ -36,7 +35,7 @@ class BEVF_TransFusion_Aug(BEVF_FasterRCNN_Aug):
                     param.requires_grad = False
 
 
-        self.freeze_img = kwargs.get('freeze_img', False) # 继承的BEVF_FasterRCNN_Aug里面会freeze lift
+        self.freeze_img = kwargs.get('freeze_img', False)
         self.init_weights(pretrained=kwargs.get('pretrained', None))
 
     def init_weights(self, pretrained=None):
@@ -79,15 +78,11 @@ class BEVF_TransFusion_Aug(BEVF_FasterRCNN_Aug):
         voxels, num_points, coors = self.voxelize(pts)
         voxel_features = self.pts_voxel_encoder(voxels, num_points, coors,
                                                 )
-        # print(voxel_features.shape) torch.Size([117551, 5])
         batch_size = coors[-1, 0] + 1
         x = self.pts_middle_encoder(voxel_features, coors, batch_size)
-        # print(x.shape) torch.Size([1, 256, 180, 180])
         x = self.pts_backbone(x)
-        # print(x[0].shape) torch.Size([1, 128, 180, 180])
         if self.with_pts_neck:
             x = self.pts_neck(x)
-            # print(x[0].shape) torch.Size([1, 512, 180, 180])
         return x
 
     @torch.no_grad()
