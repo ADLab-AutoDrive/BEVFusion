@@ -50,7 +50,7 @@ Fusing the camera and LiDAR information has become a de-facto standard for 3D ob
 
 ##### Acknowledgements of BEV-space augmentation
 
-We conduct the BEV-space augmentation proposed by [BEVDet](https://arxiv.org/abs/2112.11790) and our implementation of GlobalRotScaleTransBEV and RandomFlip3DBEV followed [BEVFusion-mit](https://github.com/mit-han-lab/bevfusion). You can also refer [BEVDet](https://github.com/HuangJunJie2017/BEVDet), [DEVDepth](https://github.com/Megvii-BaseDetection/BEVDepth) for more implementation versions.
+We conduct the BEV-space augmentation (GlobalRotScaleTransBEV and RandomFlip3DBEV) implemented by [BEVFusion-mit](https://github.com/mit-han-lab/bevfusion). You can also refer [BEVDet](https://github.com/HuangJunJie2017/BEVDet), [DEVDepth](https://github.com/Megvii-BaseDetection/BEVDepth) for more implementation versions.
 
 Moreover, there are also image-sapce augmentations you can explore in [LSS](https://github.com/nv-tlabs/lift-splat-shoot), [BEVDet](https://github.com/HuangJunJie2017/BEVDet),  [BEVFusion-mit](https://github.com/mit-han-lab/bevfusion),  [DEVDepth](https://github.com/Megvii-BaseDetection/BEVDepth).
 
