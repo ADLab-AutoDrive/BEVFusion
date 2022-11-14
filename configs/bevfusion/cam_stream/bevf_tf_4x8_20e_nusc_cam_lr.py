@@ -157,6 +157,3 @@ load_img_from = 'models/mask_rcnn_dbswin-t_fpn_3x_nuim_cocopre.pth'
 checkpoint_config = dict(interval=1, out_dir='/model')
 work_dir = '/model'
 
-custom_hooks = [
-    dict(type='MindFreeHook')
-]

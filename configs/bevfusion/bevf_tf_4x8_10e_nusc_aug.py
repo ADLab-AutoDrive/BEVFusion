@@ -210,8 +210,3 @@ data = dict(
 
 checkpoint_config = dict(interval=1, out_dir='/model')
 work_dir = '/model'
-
-
-custom_hooks = [
-    dict(type='MindFreeHook')
-]
