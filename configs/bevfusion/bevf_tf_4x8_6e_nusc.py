@@ -23,6 +23,7 @@ input_modality = dict(
 num_views = 6
 model = dict(
     type='BEVF_TransFusion',
+    freeze_img=True,
     se=True,
     camera_stream=True, 
     grid=0.6, 
