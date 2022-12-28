@@ -17,6 +17,7 @@ imc = 256
 
 model = dict(
     type='BEVF_CenterPoint',
+    freeze_img=True,
     se=True,
     camera_stream=True, 
     grid=0.6, 
