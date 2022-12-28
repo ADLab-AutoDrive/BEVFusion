@@ -9,6 +9,7 @@ voxel_size = [0.25, 0.25, 8]
 imc=256
 model = dict(
     type='BEVF_FasterRCNN',
+    freeze_img=True,
     se=True,
     lc_fusion=True,
     camera_stream=True, 
