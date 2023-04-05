@@ -103,7 +103,7 @@ torchvision==0.8.0
 
 **Benchmark Evaluation and Training**
 
-Please refer to [data_preparation.md](docs/getting_started.md) to prepare the data. Then follow the instruction there to train our model. All detection configurations are included in [configs](configs/).
+Please refer to [data_preparation.md](docs/data_preparation.md) to prepare the data. Then follow the instruction there to train our model. All detection configurations are included in [configs](configs/).
 
 ```shell
 # training example for bevfusion-pointpillar 
